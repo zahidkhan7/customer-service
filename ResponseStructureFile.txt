@@ -72,4 +72,21 @@
     }
 }
 
+------------------------------------------------------------------------------------->
+Failure: 
+{
+  "oprstatus": 0,
+  "returnCode": "1",
+  "errmsg": "{\"errMsg_AR\":\"Incorrect User ID or Password. Kindly retry using correct User ID and Password\",\"errMsg_EN\":\"Incorrect User ID or Password. Kindly retry using correct User ID and Password\"}"
+}
+ 
+Success: 
+{
+  "oprstatus": 0,
+  "returnCode": "0",
+  "efrEnrollStatus": "RG",
+  "opstatus": 0,
+  "httpStatusCode": 0
+}
+------------------------------------------------------------------------------------->
 
