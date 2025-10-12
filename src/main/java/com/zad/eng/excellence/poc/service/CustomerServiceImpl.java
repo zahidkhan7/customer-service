@@ -1,22 +1,28 @@
 package com.zad.eng.excellence.poc.service;
 
-import com.zad.eng.excellence.poc.model.CustomerPayload;
-import com.zad.eng.excellence.poc.storage.CustomerDataStorageImpl;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
+
+import com.zad.eng.excellence.poc.model.CustomerEntity;
+import com.zad.eng.excellence.poc.storage.CustomerDataStorageImpl;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-    private CustomerDataStorageImpl customerDataStorage;
+	private final CustomerDataStorageImpl customerDataStorage;
 
-    public CustomerServiceImpl(CustomerDataStorageImpl dataStorageImpl) {
-        customerDataStorage = dataStorageImpl;
-    }
+	public CustomerServiceImpl(CustomerDataStorageImpl customerDataStorage) {
+		this.customerDataStorage = customerDataStorage;
+	}
+
+	public CustomerEntity getCustomerById(String customerId) {
+		CustomerEntity customer = customerDataStorage.getCustomerById(customerId);
+		return customer;
+	}
 
 
-
-    @Override
-    public CustomerPayload getCustomerById(String customerId) {
-        return customerDataStorage.getDefaultCustomerPayload();
-    }
+	public List<CustomerEntity> getAllCustomers() {
+		return customerDataStorage.getAllCustomers();
+	}
 }

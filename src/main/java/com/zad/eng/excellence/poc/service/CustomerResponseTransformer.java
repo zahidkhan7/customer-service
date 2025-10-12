@@ -1,80 +1,122 @@
 package com.zad.eng.excellence.poc.service;
 
-import com.zad.eng.excellence.poc.service.CustomerServiceImpl;
-import com.zad.eng.excellence.poc.model.CustomerPayload;
-import com.zad.eng.excellence.poc.model.ApiResponse;
-import com.zad.eng.excellence.poc.model.Performance;
-import com.zad.eng.excellence.poc.model.ErrorDetail;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import com.zad.eng.excellence.poc.dto.ApiFailureResponse;
+import com.zad.eng.excellence.poc.dto.ApiSuccessResponse;
+import com.zad.eng.excellence.poc.dto.Customer;
+import com.zad.eng.excellence.poc.dto.ErrorDetail;
+import com.zad.eng.excellence.poc.dto.Performance;
+import com.zad.eng.excellence.poc.model.CustomerEntity;
 
 
 @Component
 public class CustomerResponseTransformer {
 
-    private CustomerServiceImpl custService;
 
-    // Constructor
-    public CustomerResponseTransformer(CustomerServiceImpl service) {
-        this.custService = service;
+    public ApiSuccessResponse<?> buildApiSuccessResponse(CustomerEntity customerEntity) {
+            return transformToApiResponse(customerEntity);      
     }
+    
+    public static ApiSuccessResponse<Customer> transformToApiResponse(CustomerEntity entity) {
 
-    public ApiResponse<CustomerPayload> getCustomerById(String customerId) {
-        if(Integer.parseInt(customerId) > 300){
-            return transformToApiResponse(custService.getCustomerById(customerId));
-        }
-        else {
-            return buildApiErrorResponse();
-        }
-    }
+        Customer customer = new Customer(
+                entity.getCustomerId(),
+                entity.getFirstName(),
+                entity.getLastName(),
+                entity.getDateOfBirth(),
+                entity.getGender(),
+                entity.getNationalId(),
+                entity.getCustomerType(),
+                entity.getStatus(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
+        );
 
-    private ApiResponse<CustomerPayload> buildApiErrorResponse() {
-        ErrorDetail error = new ErrorDetail();
-        error.setErrorCode("HTTP_404");
-        error.setErrorMessage("Not Found");
-        error.setCategory("TECHNICAL");
-        error.setSeverity("HIGH");
-        error.setHttpStatusCode(404);
-        error.setRetryable(false);
-        error.setDownstreamService("user-api");
+        ApiSuccessResponse.Metadata metadata = new ApiSuccessResponse.Metadata(
+                LocalDateTime.now(),
+                "downstream-api"
+        );
 
-        Performance perf = new Performance();
-        perf.setExecutionTimeMs(26);
+        Performance performance = new Performance();
+        performance.setExecutionTimeMs(384);
+        performance.setDownstreamCallTimeMs(null);
+        performance.setTransformationTimeMs(null);
+        performance.setAuthenticationTimeMs(null);
+        performance.setRetryAttempts(0);
+        performance.setCircuitBreakerState("CLOSED");
+        performance.setCacheHit(null);
+        performance.setQueueWaitTimeMs(null);
 
-        ApiResponse<CustomerPayload> response = new ApiResponse<>();
-        response.setSuccess(false);
-        response.setStatus("ERROR");
-        response.setError(error);
-        response.setCorrelationId("adcb-a84da1f9");
-        response.setTimestamp(LocalDateTime.now());
-        response.setServiceName("user-api");
-        response.setProtocol("REST_JSON");
-        response.setPerformance(perf);
+        // --- Step 4: Create ApiSuccessResponse (using your subclass constructor) ---
+        ApiSuccessResponse<Customer> response = new ApiSuccessResponse<>(
+                true,                              // success flag
+                "SUCCESS",                         // status
+                UUID.randomUUID().toString(),       // correlationId
+                LocalDateTime.now(),                // timestamp
+                "user-api",                         // serviceName
+                "REST_JSON",                        // protocol
+                performance                         // performance details
+        );
 
-        return response;
-    }
-
-    public ApiResponse<CustomerPayload> transformToApiResponse(CustomerPayload payload) {
-        // --- Performance details (could be measured dynamically) ---
-        Performance perf = new Performance();
-        perf.setExecutionTimeMs(384);
-        perf.setRetryAttempts(0);
-        perf.setCircuitBreakerState("CLOSED");
-
-        // --- Wrap into API Response ---
-        ApiResponse<CustomerPayload> response = new ApiResponse<>();
-        response.setSuccess(true);
-        response.setStatus("SUCCESS");
+        
+        ApiSuccessResponse.Payload<Customer> payload =
+                new ApiSuccessResponse.Payload<>(customer, metadata);
         response.setPayload(payload);
-        response.setCorrelationId("adcb-dfe0e4dc"); // generate dynamically if needed
-        response.setTimestamp(LocalDateTime.now());
-        response.setServiceName("customer-api");
-        response.setProtocol("REST_JSON");
-        response.setPerformance(perf);
 
         return response;
     }
 
 
+    public ApiFailureResponse<ErrorDetail> buildApiFailureResponse() {
+
+        // --- Step 1: Create Performance metrics ---
+        Performance performance = new Performance();
+        performance.setExecutionTimeMs(32);
+        performance.setDownstreamCallTimeMs(null);
+        performance.setTransformationTimeMs(null);
+        performance.setAuthenticationTimeMs(null);
+        performance.setRetryAttempts(null);
+        performance.setCircuitBreakerState(null);
+        performance.setCacheHit(null);
+        performance.setQueueWaitTimeMs(null);
+
+        ErrorDetail errorDetail = new ErrorDetail();
+        errorDetail.setErrorCode("HTTP_404");
+        errorDetail.setErrorMessage("Not Found");
+        errorDetail.setErrorDescription("");
+        errorDetail.setCategory("TECHNICAL");
+        errorDetail.setSeverity("HIGH");
+        errorDetail.setSource(null);
+        errorDetail.setTechnicalMessage(null);
+        errorDetail.setExceptionClass(null);
+        errorDetail.setBusinessRuleViolated(null);
+        errorDetail.setValidationErrors(null);
+        errorDetail.setRetryable(false);
+        errorDetail.setRetryAfterSeconds(null);
+        errorDetail.setDownstreamService("user-api");
+        errorDetail.setHttpStatusCode(404);
+        errorDetail.setOriginalErrorCode(null);
+        errorDetail.setAdditionalContext(null);
+        errorDetail.setResolutionSteps(null);
+        errorDetail.setSupportReferenceId(null);
+
+        // --- Step 3: Build failure response ---
+        ApiFailureResponse<ErrorDetail> failureResponse = new ApiFailureResponse<>(
+                false,                          // success = false
+                "ERROR",                        // status
+                UUID.randomUUID().toString(),   // correlationId
+                LocalDateTime.now(),            // timestamp
+                "user-api",                     // serviceName
+                "REST_JSON",                    // protocol
+                performance                   // performance metrics
+        );
+
+        failureResponse.setErrorDetail(errorDetail);
+        return failureResponse;
+    }
+    
 }

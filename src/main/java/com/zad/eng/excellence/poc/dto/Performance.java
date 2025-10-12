@@ -1,8 +1,8 @@
-package com.zad.eng.excellence.poc.model;
+package com.zad.eng.excellence.poc.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class Performance {
     private Integer executionTimeMs;
     private Integer downstreamCallTimeMs;

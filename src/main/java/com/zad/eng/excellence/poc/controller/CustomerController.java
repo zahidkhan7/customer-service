@@ -1,45 +1,56 @@
 package com.zad.eng.excellence.poc.controller;
 
-import com.zad.eng.excellence.poc.model.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.zad.eng.excellence.poc.model.CustomerPayload;
-import com.zad.eng.excellence.poc.service.CustomerResponseTransformer;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.zad.eng.excellence.poc.service.CustomerService;
+import com.zad.eng.excellence.poc.dto.ApiResponse;
+import com.zad.eng.excellence.poc.service.CustomerFacadeService;
 
 @RestController
 @RequestMapping("/api/customers")
 public class CustomerController {
 
+	private final CustomerFacadeService custFacadeService;
 
-    private final CustomerResponseTransformer responseTransformer;
+	public CustomerController(CustomerFacadeService facadeService) {
 
-    public CustomerController(CustomerResponseTransformer transformer) {
+		this.custFacadeService = facadeService;
+	}
 
-        this.responseTransformer = transformer;
-    }
+	/*
+	@GetMapping
+	public ResponseEntity<List<CustomerEntity>> getAllCustomers() {
+		List<CustomerEntity> customersPayload = custFacadeService.getAllCustomers();
+		return new ResponseEntity<>(customersPayload, HttpStatus.OK);
+	}
 
+	@GetMapping("/{customerId}")
+	public ResponseEntity<CustomerEntity> getCustomerById(@PathVariable String customerId) {
+		CustomerEntity customerPayload = custFacadeService.getCustomerById(customerId);
+		if(customerPayload !=null) {
+			return new ResponseEntity<>(customerPayload, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(new CustomerEntity(), HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	*/
+	
+	@GetMapping("/{customerId}")
+	public ResponseEntity<?> getCustomerById(@PathVariable("customerId") String customerId) {
+		ApiResponse apiResponse = custFacadeService.getCustomerById(customerId);
+		if(apiResponse.getApiSuccessResponse()!=null) {
+			return new ResponseEntity<>(apiResponse.getApiSuccessResponse(), HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(apiResponse.getApiFailureResponse(), HttpStatus.NOT_FOUND);
+		}
+	    
+	}
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<CustomerPayload>> getCustomerDefaultCustomer() {
-        ApiResponse<CustomerPayload> customerPayload= responseTransformer.getCustomerById("465");
-        return new ResponseEntity<>(customerPayload, HttpStatus.OK);
-    }
-
-    @GetMapping("/{customerId}")
-    public ResponseEntity<ApiResponse<CustomerPayload>> getCustomerById(
-            @PathVariable String customerId) {
-        ApiResponse<CustomerPayload> response = responseTransformer.getCustomerById(customerId);
-        if(response.isSuccess()){
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-        else{
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
-
-
-    }
-
-    }
+}

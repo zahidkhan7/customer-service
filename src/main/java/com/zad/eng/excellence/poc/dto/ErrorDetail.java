@@ -1,4 +1,4 @@
-package com.zad.eng.excellence.poc.model;
+package com.zad.eng.excellence.poc.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

@@ -1,0 +1,77 @@
+{
+    "success": true,
+    "status": "SUCCESS",
+    "payload": {
+        "customer": {
+            "customerId": "CUST001",
+			"firstName": "John",
+			"lastName": "Doe",
+			"dateOfBirth": "1990-05-20T00:00:00",
+			"gender": "Male",
+			"nationalId": "NID123456",
+			"customerType": "Regular",
+			"status": "Active",
+			"createdAt": "2025-10-04T16:26:09.1072692",
+			"updatedAt": "2025-10-04T16:26:09.1072692"
+        },
+        "metadata": {
+            "retrievedAt": "2025-09-29T11:49:15.961122200",
+            "source": "downstream-api"
+        }
+    },
+    "correlationId": "adcb-dfe0e4dc",
+    "timestamp": "2025-09-29T11:49:15.9671008",
+    "serviceName": "user-api",
+    "protocol": "REST_JSON",
+    "performance": {
+        "executionTimeMs": 384,
+        "downstreamCallTimeMs": null,
+        "transformationTimeMs": null,
+        "authenticationTimeMs": null,
+        "retryAttempts": 0,
+        "circuitBreakerState": "CLOSED",
+        "cacheHit": null,
+        "queueWaitTimeMs": null
+    }
+}
+
+<-------------------------------------------------------------------------------------------->
+
+{
+    "success": false,
+    "status": "ERROR",
+    "error": {
+        "errorCode": "HTTP_404",
+        "errorMessage": "Not Found",
+        "errorDescription": "",
+        "category": "TECHNICAL",
+        "severity": "HIGH",
+        "source": null,
+        "technicalMessage": null,
+        "exceptionClass": null,
+        "businessRuleViolated": null,
+        "validationErrors": null,
+        "retryable": false,
+        "retryAfterSeconds": null,
+        "downstreamService": "user-api",
+        "httpStatusCode": 404,
+        "originalErrorCode": null,
+        "additionalContext": null,
+        "resolutionSteps": null,
+        "supportReferenceId": null
+    },
+    "correlationId": "adcb-a84da1f9",
+    "timestamp": "2025-09-26T11:42:31.3413711",
+    "serviceName": "user-api",
+    "protocol": "REST_JSON",
+    "performance": {
+        "executionTimeMs": 26,
+        "downstreamCallTimeMs": null,
+        "transformationTimeMs": null,
+        "authenticationTimeMs": null,
+        "retryAttempts": null,
+        "circuitBreakerState": null,
+        "cacheHit": null,
+        "queueWaitTimeMs": null
+    }
+}

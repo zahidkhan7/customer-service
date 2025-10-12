@@ -10,6 +10,6 @@ public class WelcomeController {
 
     @GetMapping
     public String welcomeUser(){
-        return "Welcome to InetelliJ Setup";
+        return "Welcome to Customer Service";
     }
 }
